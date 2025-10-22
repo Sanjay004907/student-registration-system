@@ -1,120 +1,95 @@
-// Get DOM elements
-const studentForm = document.getElementById("studentForm");
-const studentList = document.getElementById("studentList");
-
-// Load students when the page loads
-window.addEventListener("DOMContentLoaded", loadStudents);
+// Get form and table body elements
+var studentForm = document.getElementById("studentForm");
+var studentList = document.getElementById("studentList");
 
 // Handle form submission
 studentForm.addEventListener("submit", function (e) {
     e.preventDefault();
-
-    // Get input values
-    const name = document.getElementById("studentName").value.trim();
-    const id = document.getElementById("studentID").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const contact = document.getElementById("contact").value.trim();
-
-    // Validation checks
-    if (!name || !id || !email || !contact) {
-        alert("⚠️ Please fill in all fields!");
-        return;
-    }
-    if (!/^[A-Za-z ]+$/.test(name)) {
-        alert("⚠️ Name must contain only letters.");
-        return;
-    }
-    if (!/^[0-9]+$/.test(id)) {
-        alert("⚠️ Student ID must contain only numbers.");
-        return;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        alert("⚠️ Please enter a valid email address.");
-        return;
-    }
-    if (!/^[0-9]{10}$/.test(contact)) {
-        alert("⚠️ Contact number must be exactly 10 digits.");
-        return;
-    }
-
-    // Create student object
-    const student = { name: name, id: id, email: email, contact: contact };
-
-    // Save to localStorage
-    saveStudent(student);
-
-    // Add to table
-    addStudentToTable(student);
-
-    // Reset form
-    studentForm.reset();
-
-    alert("✅ Student added successfully!");
+    registerStudent();
 });
 
-// Save a new student to local storage
-function saveStudent(student) {
-    var students = JSON.parse(localStorage.getItem("students")) || [];
-    students.push(student);
-    localStorage.setItem("students", JSON.stringify(students));
-}
+//  register a student
+function registerStudent() {
+    var name = document.getElementById("studentName").value.trim();
+    var id = document.getElementById("studentID").value.trim();
+    var email = document.getElementById("email").value.trim();
+    var contact = document.getElementById("contact").value.trim();
 
-// Load students from local storage
-function loadStudents() {
-    var students = JSON.parse(localStorage.getItem("students")) || [];
-    studentList.innerHTML = ""; // clear table
-    for (var i = 0; i < students.length; i++) {
-        addStudentToTable(students[i]);
+    // Validate input fields
+    if (name === "" || id === "" || email === "" || contact === "") {
+        alert(" Please fill in all fields!");
+        return;
     }
+
+    if (!/^[A-Za-z ]+$/.test(name)) {
+        alert(" Name must contain only letters.");
+        return;
+    }
+
+    if (!/^[0-9]+$/.test(id)) {
+        alert("Student ID must contain only numbers.");
+        return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        alert(" Please enter a valid email address.");
+        return;
+    }
+
+    if (!/^[0-9]{10}$/.test(contact)) {
+        alert(" Contact number must be exactly 10 digits.");
+        return;
+    }
+
+    addStudentToTable(name, id, email, contact);
+    studentForm.reset();
+    alert(" Student added successfully!");
 }
 
-// Add a student row to the table
-function addStudentToTable(student) {
+// add student details to table
+function addStudentToTable(name, id, email, contact) {
     var row = document.createElement("tr");
-    row.innerHTML = `
-        <td>${student.name}</td>
-        <td>${student.id}</td>
-        <td>${student.email}</td>
-        <td>${student.contact}</td>
-        <td>
-            <button class="action-btn edit">Edit</button>
-            <button class="action-btn delete">Delete</button>
-        </td>
-    `;
+
+    row.innerHTML =
+        "<td>" + name + "</td>" +
+        "<td>" + id + "</td>" +
+        "<td>" + email + "</td>" +
+        "<td>" + contact + "</td>" +
+        "<td>" +
+            "<button class='action-btn edit'>Edit</button>" +
+            "<button class='action-btn delete'>Delete</button>" +
+        "</td>";
+
     studentList.appendChild(row);
 
-    // Edit button
-    row.querySelector(".edit").addEventListener("click", function () {
-        editStudent(student);
-        row.remove();
+    // Add edit button working
+    var editBtn = row.querySelector(".edit");
+    editBtn.addEventListener("click", function () {
+        editStudent(row);
     });
 
-    // Delete button
-    row.querySelector(".delete").addEventListener("click", function () {
-        deleteStudent(student.id);
-        row.remove();
+    // Add delete button working
+    var deleteBtn = row.querySelector(".delete");
+    deleteBtn.addEventListener("click", function () {
+        deleteStudent(row);
     });
 }
 
-// Delete student from local storage
-function deleteStudent(id) {
-    var students = JSON.parse(localStorage.getItem("students")) || [];
-    var updatedStudents = [];
-    for (var i = 0; i < students.length; i++) {
-        if (students[i].id !== id) {
-            updatedStudents.push(students[i]);
-        }
+//  edit student details
+function editStudent(row) {
+    var cells = row.getElementsByTagName("td");
+
+    document.getElementById("studentName").value = cells[0].innerText;
+    document.getElementById("studentID").value = cells[1].innerText;
+    document.getElementById("email").value = cells[2].innerText;
+    document.getElementById("contact").value = cells[3].innerText;
+
+    row.remove();
+}
+
+// delete student row
+function deleteStudent(row) {
+    if (confirm(" Are you sure you want to delete this record?")) {
+        row.remove();
     }
-    localStorage.setItem("students", JSON.stringify(updatedStudents));
-    alert("🗑️ Student deleted successfully!");
-}
-
-// Edit student — fills form for editing
-function editStudent(student) {
-    document.getElementById("studentName").value = student.name;
-    document.getElementById("studentID").value = student.id;
-    document.getElementById("email").value = student.email;
-    document.getElementById("contact").value = student.contact;
-
-    deleteStudent(student.id);
 }
