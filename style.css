@@ -1,4 +1,4 @@
-/* Basic Reset */
+/* Basic styling */
 * {
     margin: 0;
     padding: 0;
@@ -29,7 +29,7 @@ header p {
     color: #555;
 }
 
-/* Form Section */
+/* Form styling */
 .form-section {
     background: #fff;
     padding: 20px;
@@ -133,7 +133,7 @@ tr:hover {
     background-color: #b02a37;
 }
 
-/* Responsive */
+/* Responsive design*/
 @media (max-width: 600px) {
     .form-section, .display-section {
         width: 100%;

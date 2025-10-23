@@ -1,18 +1,19 @@
 window.onload = function() {
     var studentForm = document.getElementById("studentForm");
     var studentList = document.getElementById("studentList");
-
+    // adding event listener
     studentForm.addEventListener("submit", function(e) {
         e.preventDefault();
         registerStudent();
     });
+    // register student function
 
     function registerStudent() {
         var name = document.getElementById("studentName").value.trim();
         var id = document.getElementById("studentID").value.trim();
         var email = document.getElementById("email").value.trim();
         var contact = document.getElementById("contact").value.trim();
-
+        // alert conditions
         if (name === "" || id === "" || email === "" || contact === "") {
             alert("Please fill in all fields!");
             return;
@@ -37,12 +38,12 @@ window.onload = function() {
             alert("Contact number must be exactly 10 digits.");
             return;
         }
-
+        
         addStudentToTable(name, id, email, contact);
         studentForm.reset();
         alert("Student added successfully!");
     }
-
+    // add students  table function
     function addStudentToTable(name, id, email, contact) {
         var row = document.createElement("tr");
 
@@ -57,18 +58,18 @@ window.onload = function() {
             "</td>";
 
         studentList.appendChild(row);
-
+        // adding event listener
         var editBtn = row.querySelector(".edit");
         editBtn.addEventListener("click", function() {
             editStudent(row);
         });
-
+        // adding event listener
         var deleteBtn = row.querySelector(".delete");
         deleteBtn.addEventListener("click", function() {
             deleteStudent(row);
         });
     }
-
+    // edit student function
     function editStudent(row) {
         var cells = row.getElementsByTagName("td");
 
@@ -79,7 +80,7 @@ window.onload = function() {
 
         row.remove();
     }
-
+    // delete student function
     function deleteStudent(row) {
         if (confirm("Are you sure you want to delete this record?")) {
             row.remove();
